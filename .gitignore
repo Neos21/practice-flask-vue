@@ -1,0 +1,10 @@
+.DS_Store
+Thumbs.db
+
+*.log
+
+# Python
+.venv/
+
+# Node.js
+node_modules/
