@@ -1,11 +1,11 @@
 from flask import Flask, render_template
 
-from api import api_blueprint
-
 # Vue.js の静的ファイルを返す
 app = Flask(__name__, static_folder = '../frontend/dist/static', template_folder = '../frontend/dist')
+
 # API のルーティングを追加する
-app.register_blueprint(api_blueprint)
+from api import blueprint_api
+app.register_blueprint(blueprint_api)
 
 @app.route('/', defaults = { 'path': '' })
 @app.route('/<path:path>')

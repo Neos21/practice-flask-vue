@@ -20,6 +20,7 @@
     "@vue/cli-plugin-typescript": "4.0.5",
     "@vue/cli-service": "4.0.5",
     "@vue/eslint-config-typescript": "4.0.0",
+    "babel-plugin-transform-remove-console": "6.9.4",
     "eslint": "5.16.0",
     "eslint-plugin-vue": "5.2.3",
     "node-sass": "4.13.0",
