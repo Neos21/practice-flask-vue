@@ -1,29 +1,30 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+    <p><button type="button" v-on:click="onFetch">Fetch</button></p>
+    <pre>Result : {{ result }}</pre>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from './components/HelloWorld.vue';
 
-@Component({
-  components: {
-    HelloWorld,
-  },
-})
-export default class App extends Vue {}
+import axios from 'axios';
+
+@Component({})
+export default class App extends Vue {
+  /** Fetch したデータ */
+  private result: string = '';
+  
+  /** Fetch ボタン押下時 */
+  async onFetch() {
+    const result = await axios.get('/api/spam');
+    this.result = JSON.stringify(result.data);
+  }
+}
 </script>
 
 <style lang="scss">
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  font-family: Helvetica, sans-serif;
 }
 </style>
