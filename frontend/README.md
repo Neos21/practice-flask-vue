@@ -1,24 +1,15 @@
-# frontend
+# Practice Flask Vue : Front-end
 
-## Project setup
-```
-npm install
-```
+```sh
+# Install dependencies
+$ npm install
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+# Start : http://localhost:8080/ (Refer to http://localhost:5000/api/ Server)
+$ npm start
 
-### Compiles and minifies for production
-```
-npm run build
-```
+# Lint
+$ npm run lint
 
-### Lints and fixes files
+# Production Build : Create ./dist/ directory
+$ npm run build
 ```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
