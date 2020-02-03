@@ -27,9 +27,11 @@
     </table>
     <p>
       <button type="button" v-on:click="onCalc">Calc</button>
-      <button type="button" v-on:click="onGetBalance">Load Balance</button>
+      <button type="button" v-on:click="onLoadBalance">Load Balance</button>
+      <button type="button" v-on:click="onSaveBalance">Save Balance</button>
     </p>
-    <p v-if="errorMessage">{{ errorMessage }}</p>
+    <p v-if="infoMessage"  class="info-message">{{ infoMessage }}</p>
+    <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
   </div>
 </template>
 
@@ -51,34 +53,86 @@ export default class App extends Vue {
   /** 合計 */
   private totalJpy: string = '0';
   
+  /** 情報メッセージ */
+  private infoMessage: string = '';
   /** エラーメッセージ */
   private errorMessage: string = '';
   
   /** 初期処理 : 要素がマウントされた時 */
   private async mounted() {
-    await this.onGetBalance();
+    this.onLoadBalance();
+    this.onCalc();
   }
   
   /** 資産を取得する */
-  private async onGetBalance() {
-    try {
-      this.errorMessage = '';
-      // 現在の資産を取得する
-      const result: any = await axios.get('/api/balance');
-      this.btc = `${result.data['btc']}`;
-      this.eth = `${result.data['eth']}`;
-      await this.onCalc();
+  private onLoadBalance() {
+    this.infoMessage = '';
+    this.errorMessage = '';
+    let isLoaded = false;
+    
+    const btc = localStorage.getItem('btc');
+    if(btc) {
+      this.btc = btc;
+      isLoaded = true;
     }
-    catch(error) {
-      console.error(error);
-      this.errorMessage = `${error}`;
+    else {
+      localStorage.setItem('btc', '0');
+    }
+    
+    const eth = localStorage.getItem('eth');
+    if(eth) {
+      this.eth = eth;
+      isLoaded = true;
+    }
+    else {
+      localStorage.setItem('eth', '0');
+    }
+    
+    if(isLoaded) {
+      this.infoMessage = 'Loaded.';
+    }
+    else {
+      this.errorMessage = 'Load failed : LocalStorage is unavailable.'
+    }
+  }
+  
+  /** 資産を保存する */
+  private async onSaveBalance() {
+    this.infoMessage = '';
+    this.errorMessage = '';
+    let isSaved = false;
+    
+    if(!this.btc) {
+      this.btc = '0';
+    }
+    if(!this.eth) {
+      this.eth = '0';
+    }
+    
+    if(this.btc) {
+      localStorage.setItem('btc', this.btc);
+      isSaved = true;
+    }
+    
+    if(this.eth) {
+      localStorage.setItem('eth', this.eth);
+      isSaved = true;
+    }
+    
+    if(isSaved) {
+      this.infoMessage = 'Saved.';
+    }
+    else {
+      this.errorMessage = 'Save failed : LocalStorage is unavailable.';
     }
   }
   
   /** レートを計算する */
   private async onCalc() {
+    this.infoMessage = 'Calculating...';
+    this.errorMessage = '';
+    
     try {
-      this.errorMessage = '';
       const result: any = await axios.post('/api/calculator', {
         btc: `${this.btc}`,
         eth: `${this.eth}`
@@ -86,15 +140,14 @@ export default class App extends Vue {
       this.btcJpy   = `${result.data['btc_jpy']}`;
       this.ethJpy   = `${result.data['eth_jpy']}`;
       this.totalJpy = `${result.data['total_jpy']}`;
+      this.infoMessage = 'Completed.';
     }
     catch(error) {
+      this.infoMessage = '';
       console.error(error);
       this.errorMessage = `${error}`;
     }
   }
-  
-  // TODO : 入力した資産額を保存する仕組み
-  // TODO : 通貨の種類を増やしても動的に対応する仕組み
 }
 </script>
 
@@ -116,5 +169,13 @@ td {
 .balance input,
 .price {
   text-align: right;
+}
+
+.info-message {
+  color: #08f;
+}
+
+.error-message {
+  color: #f00;
 }
 </style>

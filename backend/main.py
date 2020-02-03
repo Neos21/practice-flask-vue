@@ -7,9 +7,9 @@ app = Flask(__name__, static_folder = '../frontend/dist/static', template_folder
 from api import blueprint_api
 app.register_blueprint(blueprint_api)
 
+# Index や無効なパスを受け取った場合は index.html を表示する
 @app.route('/', defaults = { 'path': '' })
 @app.route('/<path:path>')
-
 def index(path):
   return render_template('index.html')
 
