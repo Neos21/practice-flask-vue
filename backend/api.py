@@ -22,7 +22,7 @@ class Rate(Resource):
       
       return { 'message': 'Unknown code' }, 403  # Flask RESTful の場合は直接レスポンスして良い
     except:
-      return { 'message': 'Failed to get board' }, 500
+      return { 'message': 'Failed to get ticker' }, 500
 api.add_resource(Rate, '/rate/<string:code>')
 
 # 計算
