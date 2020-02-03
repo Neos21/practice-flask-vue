@@ -2,7 +2,7 @@ from decimal import Decimal, getcontext, ROUND_HALF_UP
 
 from flask import Blueprint, request
 from flask_restful import Api, Resource
-import pybitflyer  # http://wolfin.hatenablog.com/entry/2016/08/29/010112
+import pybitflyer
 
 # BitFlyer API を用意する
 bit_flyer_api = pybitflyer.API()
@@ -11,20 +11,19 @@ bit_flyer_api = pybitflyer.API()
 blueprint_api = Blueprint('api', __name__, url_prefix = '/api')
 api = Api(blueprint_api)
 
-# レート
+# レート (未使用)
 class Rate(Resource):
   def get(self, code):
     try:
       if(code == 'btc'):
-        return { 'code': code, 'bid': str(bit_flyer_api.ticker(product_code = 'BTC_JPY')['best_bid']) }   # https://futurismo.biz/archives/6401
+        return { 'code': code, 'bid': str(bit_flyer_api.ticker(product_code = 'BTC_JPY')['best_bid']) }
       if(code == 'eth'):
         return { 'code': code, 'bid': str(bit_flyer_api.ticker(product_code = 'ETH_JPY')['best_bid']) }
       
-      # https://inokara.hateblo.jp/entry/2016/10/01/123923 https://qiita.com/mink0212/items/52e0ebd66bd94e1303c1 https://stackoverflow.com/questions/44430906/flask-api-typeerror-object-of-type-response-is-not-json-serializable
-      return { 'message': 'Unknown code' }, 403  # Flask API の場合は直接レスポンスして良い
+      return { 'message': 'Unknown code' }, 403  # Flask RESTful の場合は直接レスポンスして良い
     except:
       return { 'message': 'Failed to get board' }, 500
-api.add_resource(Rate, '/rate/<string:code>')  # https://kazuhira-r.hatenablog.com/entry/2019/08/14/235805
+api.add_resource(Rate, '/rate/<string:code>')
 
 # 計算
 @blueprint_api.route('/calculator', methods = ['POST'])
